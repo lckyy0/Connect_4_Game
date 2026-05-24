@@ -25,5 +25,3 @@ Since this game is built with pure frontend technologies, there is no installati
 * **CSS3:** Flexbox, CSS Grid, custom properties (variables), and keyframe animations.
 * **JavaScript (ES6+):** Clean, vanilla JS handling game logic, win/draw detection, and DOM manipulation.
 
-
-made by Lucky 2512003 :>>>
