@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-grid" aria-hidden="true"></div>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle colour theme">🌙</button>
+
+  <main class="app">
+
+    <!-- ── SETUP SCREEN ── -->
+    <section id="setupPanel" class="setup-panel">
+      <header class="header">
+        <h1 class="title">Connect<span class="title-accent"> 4</span></h1>
+        <p class="subtitle">Drop · Connect · Conquer</p>
+      </header>
+      <div class="player-inputs">
+        <div class="input-group">
+          <span class="chip-dot chip-p1" aria-hidden="true"></span>
+          <input id="p1Name" class="name-input" type="text" placeholder="Player 1" maxlength="14" autocomplete="off" aria-label="Player 1 name" />
+        </div>
+        <button id="startBtn" class="btn btn-start">🎮 Start Game</button>
+        <div class="input-group">
+          <span class="chip-dot chip-p2" aria-hidden="true"></span>
+          <input id="p2Name" class="name-input" type="text" placeholder="Player 2" maxlength="14" autocomplete="off" aria-label="Player 2 name" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── GAME SCREEN ── -->
+    <section id="gameArea" class="game-area hidden">
+
+      <!-- Sidebar: branding + controls -->
+      <aside class="game-sidebar">
+        <div class="sidebar-brand">
+          <h2 class="sidebar-title">Connect<span class="title-accent"> 4</span></h2>
+        </div>
+        <!-- Collapse / expand handle -->
+        <button id="sidebarToggle" class="sidebar-toggle" aria-label="Collapse sidebar">◀</button>
+        <div class="controls">
+          <button id="resetBtn" class="btn btn-outline">↺ Play Again</button>
+          <button id="homeBtn"  class="btn btn-ghost">⌂ Home</button>
+        </div>
+      </aside>
+
+      <!-- Board area -->
+      <div class="board-main">
+        <div id="turnIndicator" class="turn-indicator" role="status" aria-live="polite" aria-atomic="true">
+          <span id="turnDot"  class="turn-dot"  aria-hidden="true"></span>
+          <span id="turnText" class="turn-text">…</span>
+        </div>
+        <div class="board-wrapper">
+          <div id="colArrows" class="col-arrows" aria-hidden="true"></div>
+          <div id="board" class="board" role="grid" aria-label="Connect 4 board"></div>
+          <div class="board-feet" aria-hidden="true">
+            <div class="foot"></div>
+            <div class="foot"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ── WIN OVERLAY ── -->
+  <div id="winOverlay" class="win-overlay" role="dialog" aria-modal="true" aria-label="Game result" aria-hidden="true">
+    <div class="win-card">
+      <div id="confettiBox" class="confetti-box" aria-hidden="true"></div>
+      <div class="win-trophy" aria-hidden="true">🏆</div>
+      <p  class="win-eyebrow">WINNER!</p>
+      <h2 id="winnerName" class="win-name">Player 1</h2>
+      <p  class="win-sub">wins the game!</p>
+      <div class="win-actions">
+        <button id="overlayPlayAgainBtn" class="btn btn-win">🎮 Play Again</button>
+        <button id="overlayHomeBtn"      class="btn btn-outline">⌂ Home</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">made by Lucky 2512003 :&gt;&gt;&gt;</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

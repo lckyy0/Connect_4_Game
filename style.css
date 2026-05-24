@@ -1,0 +1,467 @@
+/* ================================================================
+   CONNECT 4 · style.css
+   Theme : Soft Physical Toy / Claymorphism
+   Fonts : Fredoka (display) + Nunito (body)
+   ================================================================ */
+
+/* ── Custom Properties ─────────────────────────────────────────── */
+:root {
+  --cell-size    : 68px;
+  --cell-gap     : 10px;
+  --board-pad    : 16px;
+  --board-radius : 26px;
+
+  --font-display : 'Fredoka', sans-serif;
+  --font-body    : 'Nunito', sans-serif;
+
+  --chip-p1      : #FF5757;
+  --chip-p1-hi   : #FFAAAA;
+  --chip-p1-lo   : #BB1111;
+
+  --chip-p2      : #3ECC6A;
+  --chip-p2-hi   : #8EEAA8;
+  --chip-p2-lo   : #1A9940;
+
+  --emerald      : #00A86B;
+  --trans        : 0.22s ease;
+}
+
+/* ── Light Theme ─────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg               : #f2fdf6;
+  --bg-dot           : rgba(0, 168, 107, 0.09);
+  --surface          : #ffffff;
+  --text-pri         : #142318;
+  --text-sec         : #486055;
+  --text-muted       : #92b8a4;
+  --border           : rgba(0, 168, 107, 0.22);
+  --shadow-a         : rgba(1, 50, 32, 0.10);
+  --shadow-b         : rgba(1, 50, 32, 0.20);
+
+  --input-bg         : rgba(0, 168, 107, 0.06);
+  --input-border     : rgba(0, 168, 107, 0.28);
+  --input-focus      : #00A86B;
+  --input-placeholder: rgba(72, 96, 85, 0.45);
+
+  --indicator-bg     : rgba(255, 255, 255, 0.85);
+  --indicator-border : var(--border);
+
+  --btn-pri          : #00A86B;
+  --btn-pri-edge     : #006b44;
+  --btn-pri-text     : #ffffff;
+  --btn-pri-glow     : rgba(0, 168, 107, 0.35);
+
+  --btn-sec-text     : var(--text-sec);
+  --btn-sec-border   : var(--border);
+  --btn-sec-hover-bg : rgba(0, 168, 107, 0.08);
+
+  --overlay-bg       : rgba(1, 50, 32, 0.50);
+  --card-bg          : #ffffff;
+  --card-border      : rgba(0, 168, 107, 0.18);
+  --card-shadow      : rgba(1, 50, 32, 0.22);
+
+  --sidebar-bg       : rgba(0, 168, 107, 0.035);
+  --sidebar-border   : rgba(0, 168, 107, 0.14);
+}
+
+/* ── Dark Theme ──────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg               : #111d2b;
+  --bg-dot           : rgba(57, 255, 20, 0.05);
+  --surface          : #192638;
+  --text-pri         : #e4f2ff;
+  --text-sec         : #88aec8;
+  --text-muted       : #4a6e88;
+  --border           : rgba(57, 255, 20, 0.13);
+  --shadow-a         : rgba(0, 0, 0, 0.30);
+  --shadow-b         : rgba(0, 0, 0, 0.50);
+
+  --input-bg         : rgba(57, 255, 20, 0.05);
+  --input-border     : rgba(57, 255, 20, 0.18);
+  --input-focus      : #39FF14;
+  --input-placeholder: rgba(136, 174, 200, 0.40);
+
+  --indicator-bg     : rgba(25, 38, 56, 0.90);
+  --indicator-border : var(--border);
+
+  --btn-pri          : #00A86B;
+  --btn-pri-edge     : #005c38;
+  --btn-pri-text     : #ffffff;
+  --btn-pri-glow     : rgba(0, 168, 107, 0.30);
+
+  --btn-sec-text     : var(--text-sec);
+  --btn-sec-border   : var(--border);
+  --btn-sec-hover-bg : rgba(57, 255, 20, 0.07);
+
+  --overlay-bg       : rgba(0, 0, 0, 0.72);
+  --card-bg          : #192638;
+  --card-border      : rgba(57, 255, 20, 0.14);
+  --card-shadow      : rgba(0, 0, 0, 0.50);
+
+  --sidebar-bg       : rgba(255, 255, 255, 0.025);
+  --sidebar-border   : rgba(57, 255, 20, 0.10);
+}
+
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; transition: background-color var(--trans), color var(--trans); }
+
+body {
+  min-height: 100%;
+  background-color: var(--bg);
+  color: var(--text-pri);
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  transition: background-color var(--trans), color var(--trans);
+}
+/* Lock viewport during gameplay – no scrolling */
+body.game-active { overflow: hidden; height: 100vh; }
+
+/* ── Background Texture ───────────────────────────────────────── */
+.bg-grid {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(circle, var(--bg-dot) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+  transition: background-image var(--trans);
+}
+
+/* ── Theme Toggle Button ──────────────────────────────────────── */
+.theme-toggle {
+  position: fixed; top: 16px; right: 16px; z-index: 300;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--border); background: var(--surface);
+  font-size: 1.3rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 0 var(--shadow-a), 0 6px 18px var(--shadow-a);
+  transition: transform 0.14s, box-shadow 0.14s, background var(--trans), border-color var(--trans);
+}
+.theme-toggle:hover  { transform: translateY(-2px); box-shadow: 0 5px 0 var(--shadow-a), 0 10px 22px var(--shadow-b); }
+.theme-toggle:active { transform: translateY(2px);  box-shadow: 0 1px 0 var(--shadow-a), 0 3px 8px  var(--shadow-a); }
+
+/* ── App Container ────────────────────────────────────────────── */
+.app {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 22px; padding: 48px 20px 24px;
+  width: 100%; max-width: 680px; flex: 1;
+  transition: max-width var(--trans), padding var(--trans);
+}
+body.game-active .app { max-width: 100%; padding: 0; gap: 0; height: 100vh; overflow: hidden; }
+
+/* ── Setup Screen Header ──────────────────────────────────────── */
+.header { text-align: center; }
+.title { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.8rem, 9vw, 5rem); line-height: 1; color: var(--text-pri); letter-spacing: 0.01em; transition: color var(--trans); }
+.title-accent { color: var(--emerald); }
+.subtitle { margin-top: 8px; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); transition: color var(--trans); }
+
+/* ── Setup Panel ──────────────────────────────────────────────── */
+.setup-panel { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+.player-inputs { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 14px; width: 100%; }
+.input-group { display: flex; align-items: center; gap: 10px; }
+
+.chip-dot { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 3px 0 rgba(0,0,0,0.18), inset 0 -2px 4px rgba(0,0,0,0.20), inset 0 2px 5px rgba(255,255,255,0.30); }
+.chip-dot.chip-p1 { background: radial-gradient(circle at 38% 32%, var(--chip-p1-hi), var(--chip-p1) 55%, var(--chip-p1-lo)); }
+.chip-dot.chip-p2 { background: radial-gradient(circle at 38% 32%, var(--chip-p2-hi), var(--chip-p2) 55%, var(--chip-p2-lo)); }
+
+.name-input {
+  width: 165px; padding: 11px 16px; background: var(--input-bg); border: 2px solid var(--input-border);
+  border-radius: 14px; color: var(--text-pri); font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+  outline: none; transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, color var(--trans);
+}
+.name-input::placeholder { color: var(--input-placeholder); }
+.name-input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.12); }
+[data-theme="dark"] .name-input:focus { box-shadow: 0 0 0 4px rgba(57, 255, 20, 0.10); }
+
+/* ── Button System ────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.01em;
+  border: none; border-radius: 14px; cursor: pointer; padding: 12px 24px;
+  position: relative; transition: transform 0.12s, box-shadow 0.12s, background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+.btn-start, .btn-win { color: var(--btn-pri-text); background: var(--btn-pri); box-shadow: 0 6px 0 var(--btn-pri-edge), 0 10px 24px var(--btn-pri-glow); font-size: 1.05rem; padding: 14px 30px; }
+.btn-start:hover, .btn-win:hover  { transform: translateY(-2px); box-shadow: 0 8px 0 var(--btn-pri-edge), 0 14px 28px var(--btn-pri-glow); }
+.btn-start:active, .btn-win:active { transform: translateY(5px);  box-shadow: 0 1px 0 var(--btn-pri-edge), 0 4px 10px var(--btn-pri-glow); }
+
+.btn-outline { color: var(--btn-sec-text); background: var(--surface); border: 2px solid var(--btn-sec-border); box-shadow: 0 4px 0 var(--shadow-a), 0 6px 16px var(--shadow-a); }
+.btn-outline:hover  { background: var(--btn-sec-hover-bg); transform: translateY(-2px); box-shadow: 0 6px 0 var(--shadow-a), 0 10px 20px var(--shadow-b); }
+.btn-outline:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--shadow-a), 0 3px 8px var(--shadow-a); }
+
+.btn-ghost { color: var(--text-muted); background: transparent; font-size: 0.85rem; padding: 10px 16px; }
+.btn-ghost:hover  { color: var(--text-sec); background: var(--btn-sec-hover-bg); }
+.btn-ghost:active { transform: scale(0.97); }
+
+/* ── Utility ──────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ── Game Area ────────────────────────────────────────────────── */
+.game-area { display: flex; flex-direction: row; width: 100%; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ──────────────────────────────────────────────────── */
+.game-sidebar {
+  /* Width animates on collapse/expand */
+  width: 220px; min-width: 220px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: stretch;
+  padding: 28px 20px;
+  background: var(--sidebar-bg); border-right: 1.5px solid var(--sidebar-border);
+  transition: width 0.28s ease, min-width 0.28s ease, padding 0.28s ease,
+              background var(--trans), border-color var(--trans);
+  overflow: hidden;
+}
+
+/* ── Sidebar Brand Box ────────────────────────────────────────── */
+/*
+  Slightly distinct from the plain sidebar via a white card surface,
+  a soft shadow, and a subtle emerald left-accent stripe (inset shadow).
+*/
+.sidebar-brand {
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  box-shadow:
+    0 3px 0 var(--shadow-a),
+    0 6px 16px var(--shadow-a),
+    inset 3px 0 0 rgba(0, 168, 107, 0.45); /* emerald left accent */
+  transition: background var(--trans), border-color var(--trans), box-shadow var(--trans), padding 0.28s ease;
+  flex-shrink: 0;
+}
+.sidebar-title { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; line-height: 1.05; color: var(--text-pri); letter-spacing: 0.01em; transition: color var(--trans), font-size 0.28s ease; }
+
+/* ── Sidebar Toggle Button (◀ / ▶) ───────────────────────────── */
+.sidebar-toggle {
+  align-self: flex-end;
+  margin-top: 10px;
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--btn-sec-hover-bg);
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--trans), color var(--trans), border-color var(--trans);
+  flex-shrink: 0;
+}
+.sidebar-toggle:hover { background: var(--surface); color: var(--text-sec); }
+
+/* ── Sidebar Controls ─────────────────────────────────────────── */
+.game-sidebar .controls {
+  display: flex; flex-direction: column; align-items: stretch; gap: 12px;
+  width: 100%; margin-top: 28px;
+  /* Fade out quickly when collapsing */
+  transition: opacity 0.15s ease;
+}
+.game-sidebar .controls .btn { width: 100%; text-align: center; }
+
+/* ── COLLAPSED Sidebar State ──────────────────────────────────── */
+.game-sidebar.collapsed {
+  width: 90px;
+  min-width: 90px;
+  padding: 28px 10px;
+  align-items: center;
+}
+/* Compact brand in collapsed state */
+.game-sidebar.collapsed .sidebar-brand {
+  padding: 10px 8px;
+  width: 100%;
+  text-align: center;
+}
+.game-sidebar.collapsed .sidebar-title {
+  font-size: 0.8rem;
+  word-break: break-word;
+  text-align: center;
+  line-height: 1.4;
+}
+/* Toggle button re-centres when sidebar is collapsed */
+.game-sidebar.collapsed .sidebar-toggle {
+  align-self: center;
+  margin-top: 10px;
+}
+/* Controls disappear instantly on collapse */
+.game-sidebar.collapsed .controls { display: none; }
+
+/* ── Turn Indicator ───────────────────────────────────────────── */
+.turn-indicator {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 24px; border-radius: 40px;
+  border: 2px solid var(--indicator-border); background: var(--indicator-bg);
+  min-width: 260px; justify-content: center;
+  box-shadow: 0 4px 0 var(--shadow-a), 0 8px 20px var(--shadow-a);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.28s, background var(--trans);
+  margin-bottom: 20px;
+}
+.turn-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 2px 0 rgba(0,0,0,0.20), inset 0 -2px 3px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,255,255,0.28); animation: dotBounce 1.1s ease-in-out infinite; }
+@keyframes dotBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.turn-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.01em; transition: color 0.22s; }
+
+/* ── Board Main (centre column) ───────────────────────────────── */
+/*
+  padding-bottom gives the board clearance above the fixed footer.
+  flex: 1 means it expands when the sidebar collapses.
+*/
+.board-main {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px 24px 52px; /* bottom pad clears the fixed footer */
+  overflow: hidden; min-width: 0;
+  transition: padding 0.28s ease;
+}
+.board-wrapper { display: flex; flex-direction: column; align-items: center; overflow: visible; }
+
+/* ── Column Arrows ────────────────────────────────────────────── */
+.col-arrows { display: flex; gap: var(--cell-gap); padding: 0 var(--board-pad); margin-bottom: 4px; height: 24px; }
+.col-arrow { width: var(--cell-size); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: transparent; cursor: pointer; user-select: none; transition: color 0.14s, transform 0.14s; }
+.col-arrow.hovered { color: var(--emerald); transform: translateY(5px); }
+
+/* ── Board Frame ──────────────────────────────────────────────── */
+.board {
+  display: grid;
+  grid-template-columns: repeat(7, var(--cell-size));
+  grid-template-rows:    repeat(6, var(--cell-size));
+  gap: var(--cell-gap); padding: var(--board-pad); border-radius: var(--board-radius);
+  background: linear-gradient(168deg, #6BBDFF 0%, #2E87F0 45%, #1460CC 100%);
+  box-shadow: 0 8px 0 #0A3A9A, 0 14px 40px rgba(0, 40, 140, 0.35), inset 0 2px 6px rgba(255, 255, 255, 0.18), inset 0 -3px 8px rgba(0, 0, 0, 0.22);
+  overflow: visible; position: relative;
+}
+
+/* ── Board Feet ───────────────────────────────────────────────── */
+.board-feet { display: flex; justify-content: space-between; width: calc(7 * var(--cell-size) + 6 * var(--cell-gap) + 2 * var(--board-pad)); padding: 0 calc(var(--board-pad) + var(--cell-size) * 0.8); margin-top: -2px; }
+.foot { width: calc(var(--cell-size) * 1.2); height: 22px; background: linear-gradient(to bottom, #1255C4, #0A3A9A); border-radius: 0 0 16px 16px; box-shadow: 0 7px 0 #061E50, 0 12px 20px rgba(0, 10, 60, 0.32); }
+
+/* ── Cells (holes) ────────────────────────────────────────────── */
+.cell {
+  width: var(--cell-size); height: var(--cell-size); border-radius: 50%;
+  background: rgba(8, 28, 85, 0.28);
+  position: relative; cursor: pointer; overflow: visible;
+  box-shadow: inset 0 5px 12px rgba(0, 0, 0, 0.38), inset 0 2px 4px rgba(0, 0, 0, 0.24), inset 0 -2px 5px rgba(120, 180, 255, 0.18);
+  transition: background 0.12s;
+}
+.cell.col-hover { background: rgba(200, 225, 255, 0.18); }
+
+/* ── Chips ────────────────────────────────────────────────────── */
+.chip { position: absolute; inset: 0; border-radius: 50%; animation: chipBounce 0.52s cubic-bezier(0.28, 0, 0.18, 1) forwards; }
+@keyframes chipBounce {
+  0%   { transform: translateY(var(--drop-from, -500px)); opacity: 0.85; }
+  62%  { transform: translateY(0);      opacity: 1; }
+  76%  { transform: translateY(-11px); }
+  87%  { transform: translateY(2px); }
+  94%  { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+.chip.p1 { background: radial-gradient(circle at 38% 30%, var(--chip-p1-hi), var(--chip-p1) 55%, var(--chip-p1-lo)); box-shadow: 0 4px 0 rgba(0,0,0,0.25), inset 0 -3px 6px rgba(0,0,0,0.28), inset 0 3px 8px rgba(255,255,255,0.28); }
+.chip.p2 { background: radial-gradient(circle at 38% 30%, var(--chip-p2-hi), var(--chip-p2) 55%, var(--chip-p2-lo)); box-shadow: 0 4px 0 rgba(0,0,0,0.25), inset 0 -3px 6px rgba(0,0,0,0.28), inset 0 3px 8px rgba(255,255,255,0.28); }
+.chip.winner { animation: winWiggle 0.55s ease-in-out infinite; }
+@keyframes winWiggle { 0%, 100% { transform: scale(1) rotate(0deg); filter: brightness(1.05); } 25% { transform: scale(1.13) rotate(-6deg); filter: brightness(1.30); } 50% { transform: scale(1.10) rotate(6deg); filter: brightness(1.30); } 75% { transform: scale(1.13) rotate(-3deg); filter: brightness(1.10); } }
+
+/* ── Win Overlay ──────────────────────────────────────────────── */
+.win-overlay { position: fixed; inset: 0; background: var(--overlay-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.32s ease, background var(--trans); }
+.win-overlay.active { opacity: 1; pointer-events: all; }
+.win-card { position: relative; padding: 44px 52px; text-align: center; border-radius: 28px; border: 2px solid var(--card-border); background: var(--card-bg); box-shadow: 0 10px 0 var(--shadow-a), 0 24px 60px var(--card-shadow); overflow: hidden; transition: background var(--trans), border-color var(--trans); }
+.win-overlay.active .win-card { animation: cardPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes cardPop { from { transform: scale(0.72) translateY(28px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+.win-trophy  { font-size: 3.2rem; margin-bottom: 8px; animation: trophyBob 1.4s ease-in-out infinite; }
+@keyframes trophyBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+.win-eyebrow { font-family: var(--font-display); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.28em; color: var(--text-muted); margin-bottom: 8px; transition: color var(--trans); }
+.win-name    { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 6px; }
+.win-sub     { font-family: var(--font-body); font-size: 1rem; font-weight: 600; color: var(--text-sec); margin-bottom: 28px; transition: color var(--trans); }
+.win-actions { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+
+/* ── Confetti ─────────────────────────────────────────────────── */
+.confetti-box { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.confetti-piece { position: absolute; border-radius: 3px; animation: confettiFall linear forwards; }
+@keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(240px) rotate(540deg); opacity: 0; } }
+
+/* ── Footer ───────────────────────────────────────────────────── */
+/*
+  Full-width bar anchored at the very bottom.
+  Uses the same emerald green as the Start Game button — deliberate,
+  on-brand, and visually distinct without being heavy.
+*/
+.footer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  padding: 7px 20px;
+  background: var(--btn-pri); /* #00A86B — same as Start Game */
+  color: var(--btn-pri-text); /* white */
+  font-family: var(--font-body); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.07em; text-align: center; pointer-events: none;
+}
+
+/* ── Responsive: medium screens ───────────────────────────────── */
+@media (max-width: 900px) and (min-height: 600px) {
+  body.game-active { --cell-size: 55px; --cell-gap: 8px; --board-pad: 14px; --board-radius: 22px; }
+}
+@media (max-height: 680px) {
+  body.game-active { --cell-size: 55px; --cell-gap: 8px; --board-pad: 14px; --board-radius: 22px; }
+}
+@media (max-height: 580px) {
+  body.game-active { --cell-size: 46px; --cell-gap: 6px; --board-pad: 12px; --board-radius: 18px; }
+  .game-sidebar { padding: 16px 14px; }
+  .game-sidebar .controls { margin-top: 16px; }
+  .sidebar-brand { padding: 10px 14px; }
+  .sidebar-title { font-size: 1.4rem; }
+}
+@media (max-width: 780px) {
+  body.game-active { --cell-size: 50px; --cell-gap: 7px; --board-pad: 12px; --board-radius: 20px; }
+  .game-sidebar { width: 185px; min-width: 170px; padding: 20px 14px; }
+  .board-main { padding: 20px 16px 52px; }
+}
+
+/* ── Responsive: mobile (< 600px) ────────────────────────────── */
+@media (max-width: 599px) {
+
+  /* Sidebar flips to a horizontal top bar */
+  body.game-active { --cell-size: 44px; --cell-gap: 6px; --board-pad: 10px; --board-radius: 16px; }
+
+  .game-area { flex-direction: column; }
+  .game-sidebar {
+    width: 100% !important; min-width: unset !important;
+    flex-direction: row; flex-wrap: wrap; align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px; gap: 8px;
+    border-right: none; border-bottom: 1.5px solid var(--sidebar-border);
+    height: auto; overflow: visible;
+  }
+
+  /* Brand box: shrink to content width, don't stretch */
+  .sidebar-brand {
+    flex: 0 0 auto;      /* no growth */
+    width: auto;
+    padding: 7px 12px;
+    border-radius: 12px;
+  }
+  .sidebar-title { font-size: 1.2rem; }
+
+  /* Hide the collapse toggle — meaningless in top-bar mode */
+  .sidebar-toggle { display: none; }
+
+  .game-sidebar .controls { margin-top: 0; flex-direction: row; width: auto; gap: 6px; }
+  .game-sidebar .controls .btn { width: auto; padding: 8px 12px; font-size: 0.82rem; }
+
+  .board-main { flex: 1; padding: 10px 8px 52px; justify-content: flex-start; }
+  .turn-indicator { margin-bottom: 12px; padding: 7px 14px; min-width: 200px; }
+  .turn-text { font-size: 0.95rem; }
+
+  /* Theme toggle: hide during gameplay on mobile (accessible on setup screen) */
+  body.game-active .theme-toggle { display: none; }
+
+  /* Setup: stack inputs vertically, compensate for button 3D shadow */
+  .player-inputs { flex-direction: column; gap: 8px; }
+  #startBtn { margin-bottom: -4px; } /* visual balance — offset the 6px bottom shadow */
+  .name-input { width: 220px; }
+
+  /* Win overlay */
+  .win-card { padding: 32px 24px; margin: 16px; }
+  .win-name { font-size: 1.8rem; }
+  .win-actions { gap: 10px; }
+  .btn-win { padding: 12px 20px; font-size: 0.95rem; }
+}
+
+@media (max-width: 370px) {
+  body.game-active { --cell-size: 38px; --cell-gap: 5px; }
+  .btn-ghost { padding: 7px 9px; font-size: 0.76rem; }
+}
