@@ -450,8 +450,8 @@ body.game-active .app { max-width: 100%; padding: 0; gap: 0; height: 100vh; over
   body.game-active .theme-toggle { display: none; }
 
   /* Setup: stack inputs vertically, compensate for button 3D shadow */
-  .player-inputs { flex-direction: column; gap: 8px; }
-  #startBtn { margin-bottom: -4px; } /* visual balance — offset the 6px bottom shadow */
+  .player-inputs { flex-direction: column; gap: 16px; }
+  #startBtn { margin-bottom: 8px; } /* visual balance — offset the 6px bottom shadow */
   .name-input { width: 220px; }
 
   /* Win overlay */
